@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="HeartGuard AI – Heart Disease Prediction Tool powered by Machine Learning">
+    <title>HeartGuard AI – Heart Disease Prediction</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* =====================================================
+           RESET & BASE
+        ===================================================== */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg-dark:        #0b0f1a;
+            --bg-card:        rgba(255, 255, 255, 0.05);
+            --bg-section:     rgba(255, 255, 255, 0.03);
+            --border:         rgba(255, 255, 255, 0.10);
+            --border-focus:   rgba(99, 179, 237, 0.70);
+            --text-primary:   #f0f4ff;
+            --text-secondary: #8b9ab3;
+            --text-label:     #c8d3e8;
+            --accent-blue:    #63b3ed;
+            --accent-purple:  #9f7aea;
+            --accent-red:     #fc6b7b;
+            --gradient-main:  linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-btn:   linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --shadow-card:    0 25px 60px rgba(0, 0, 0, 0.50);
+            --shadow-btn:     0 8px 30px rgba(245, 87, 108, 0.45);
+            --input-bg:       rgba(255, 255, 255, 0.06);
+            --radius-card:    20px;
+            --radius-input:   10px;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 40px 16px 60px;
+
+            /* Animated gradient background blobs */
+            background-image:
+                radial-gradient(ellipse 60% 50% at 20% 10%, rgba(99, 102, 241, 0.18) 0%, transparent 70%),
+                radial-gradient(ellipse 50% 40% at 80% 80%, rgba(159, 122, 234, 0.15) 0%, transparent 70%),
+                radial-gradient(ellipse 40% 30% at 60% 30%, rgba(252, 107, 123, 0.10) 0%, transparent 60%);
+        }
+
+        /* =====================================================
+           HEADER / LOGO
+        ===================================================== */
+        .header {
+            text-align: center;
+            margin-bottom: 36px;
+            animation: fadeDown 0.6s ease both;
+        }
+
+        .logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--gradient-btn);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 4px 20px rgba(245, 87, 108, 0.40);
+            animation: pulse-heart 2s ease-in-out infinite;
+        }
+
+        .logo-title {
+            font-size: 2rem;
+            font-weight: 700;
+            background: var(--gradient-btn);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header-subtitle {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+            letter-spacing: 0.02em;
+        }
+
+        /* =====================================================
+           CARD
+        ===================================================== */
+        .card {
+            width: 100%;
+            max-width: 860px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-card);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            box-shadow: var(--shadow-card);
+            padding: 40px 44px 48px;
+            animation: fadeUp 0.7s ease both;
+        }
+
+        /* =====================================================
+           ERROR BANNER
+        ===================================================== */
+        .error-banner {
+            background: rgba(252, 107, 123, 0.12);
+            border: 1px solid rgba(252, 107, 123, 0.35);
+            border-radius: 10px;
+            padding: 14px 18px;
+            margin-bottom: 28px;
+            color: #fc8b97;
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .error-banner::before { content: "⚠"; font-size: 1.1rem; }
+
+        /* =====================================================
+           SECTION HEADERS
+        ===================================================== */
+        .section-label {
+            font-size: 0.70rem;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--accent-blue);
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-label::before {
+            content: '';
+            width: 3px;
+            height: 14px;
+            background: var(--gradient-main);
+            border-radius: 2px;
+            display: inline-block;
+        }
+
+        .section {
+            background: var(--bg-section);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 22px 24px 18px;
+            margin-bottom: 22px;
+        }
+
+        /* =====================================================
+           GRID LAYOUT FOR INPUTS
+        ===================================================== */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px 24px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 16px 24px;
+        }
+
+        /* =====================================================
+           FORM FIELDS
+        ===================================================== */
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        label {
+            font-size: 0.80rem;
+            font-weight: 500;
+            color: var(--text-label);
+            letter-spacing: 0.015em;
+        }
+
+        label span.hint {
+            font-size: 0.72rem;
+            font-weight: 400;
+            color: var(--text-secondary);
+            margin-left: 6px;
+        }
+
+        input[type="number"],
+        input[type="text"],
+        select {
+            background: var(--input-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-input);
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 0.90rem;
+            padding: 11px 14px;
+            outline: none;
+            transition: border-color 0.25s, box-shadow 0.25s, background 0.25s;
+            width: 100%;
+            -moz-appearance: textfield;  /* hide arrows in Firefox */
+        }
+
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--border-focus);
+            background: rgba(99, 179, 237, 0.07);
+            box-shadow: 0 0 0 3px rgba(99, 179, 237, 0.15);
+        }
+
+        select option {
+            background: #1a2035;
+            color: var(--text-primary);
+        }
+
+        /* Placeholder style */
+        input::placeholder { color: rgba(139, 154, 179, 0.55); }
+
+        /* =====================================================
+           SUBMIT BUTTON
+        ===================================================== */
+        .btn-submit {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            background: var(--gradient-btn);
+            color: #fff;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            cursor: pointer;
+            margin-top: 10px;
+            box-shadow: var(--shadow-btn);
+            transition: opacity 0.2s, transform 0.2s, box-shadow 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-submit:hover {
+            opacity: 0.92;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(245, 87, 108, 0.55);
+        }
+
+        .btn-submit:active { transform: translateY(0); }
+
+        /* Shimmer sweep on hover */
+        .btn-submit::after {
+            content: '';
+            position: absolute;
+            top: 0; left: -75%;
+            width: 50%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+            transform: skewX(-20deg);
+            transition: left 0.55s;
+        }
+        .btn-submit:hover::after { left: 130%; }
+
+        /* =====================================================
+           DISCLAIMER FOOTER
+        ===================================================== */
+        .disclaimer {
+            text-align: center;
+            font-size: 0.73rem;
+            color: var(--text-secondary);
+            margin-top: 24px;
+            line-height: 1.6;
+        }
+
+        /* =====================================================
+           ANIMATIONS
+        ===================================================== */
+        @keyframes fadeDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(24px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse-heart {
+            0%, 100% { transform: scale(1); }
+            50%       { transform: scale(1.10); }
+        }
+
+        /* =====================================================
+           RESPONSIVE
+        ===================================================== */
+        @media (max-width: 640px) {
+            .card { padding: 28px 20px 36px; }
+            .grid-2, .grid-3 { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===================================================
+         HEADER
+    =================================================== -->
+    <header class="header">
+        <div class="logo">
+            <div class="logo-icon">&#10084;</div>
+            <h1 class="logo-title">HeartGuard AI</h1>
+        </div>
+        <p class="header-subtitle">
+            Enter your health metrics below to receive an instant cardiac risk analysis.
+        </p>
+    </header>
+
+    <!-- ===================================================
+         MAIN CARD
+    =================================================== -->
+    <main class="card">
+
+        <!-- Error message (only shown when Flask passes an error) -->
+        {% if error %}
+        <div class="error-banner" role="alert">
+            {{ error }}
+        </div>
+        {% endif %}
+
+        <!-- -----------------------------------------------
+             FORM  –  action="/predict"  method="POST"
+        ----------------------------------------------- -->
+        <form action="/predict" method="POST" novalidate id="health-form">
+
+            <!-- ============================================
+                 SECTION 1 : Personal Information
+            ============================================ -->
+            <div class="section">
+                <div class="section-label">Personal Information</div>
+                <div class="grid-3">
+
+                    <div class="field">
+                        <label for="age">Age <span class="hint">(years)</span></label>
+                        <input
+                            type="number" id="age" name="age"
+                            placeholder="e.g. 52"
+                            min="1" max="120"
+                            required>
+                    </div>
+
+                    <div class="field">
+                        <label for="sex">Sex</label>
+                        <select id="sex" name="sex" required>
+                            <option value="" disabled selected>Select</option>
+                            <option value="1">Male</option>
+                            <option value="0">Female</option>
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label for="cp">Chest Pain Type <span class="hint">(0–3)</span></label>
+                        <select id="cp" name="cp" required>
+                            <option value="" disabled selected>Select type</option>
+                            <option value="0">0 – Typical Angina</option>
+                            <option value="1">1 – Atypical Angina</option>
+                            <option value="2">2 – Non-anginal Pain</option>
+                            <option value="3">3 – Asymptomatic</option>
+                        </select>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- ============================================
+                 SECTION 2 : Cardiac Metrics
+            ============================================ -->
+            <div class="section">
+                <div class="section-label">Cardiac Metrics</div>
+                <div class="grid-2">
+
+                    <div class="field">
+                        <label for="trestbps">Resting Blood Pressure <span class="hint">(mm Hg)</span></label>
+                        <input
+                            type="number" id="trestbps" name="trestbps"
+                            placeholder="e.g. 130"
+                            min="50" max="250"
+                            required>
+                    </div>
+
+                    <div class="field">
+                        <label for="chol">Serum Cholesterol <span class="hint">(mg/dl)</span></label>
+                        <input
+                            type="number" id="chol" name="chol"
+                            placeholder="e.g. 240"
+                            min="50" max="600"
+                            required>
+                    </div>
+
+                    <div class="field">
+                        <label for="fbs">Fasting Blood Sugar &gt; 120 mg/dl</label>
+                        <select id="fbs" name="fbs" required>
+                            <option value="" disabled selected>Select</option>
+                            <option value="1">Yes  (1)</option>
+                            <option value="0">No   (0)</option>
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label for="restecg">Resting ECG Result <span class="hint">(0–2)</span></label>
+                        <select id="restecg" name="restecg" required>
+                            <option value="" disabled selected>Select result</option>
+                            <option value="0">0 – Normal</option>
+                            <option value="1">1 – ST-T Abnormality</option>
+                            <option value="2">2 – LV Hypertrophy</option>
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label for="thalach">Max Heart Rate Achieved <span class="hint">(bpm)</span></label>
+                        <input
+                            type="number" id="thalach" name="thalach"
+                            placeholder="e.g. 150"
+                            min="40" max="230"
+                            required>
+                    </div>
+
+                    <div class="field">
+                        <label for="exang">Exercise Induced Angina</label>
+                        <select id="exang" name="exang" required>
+                            <option value="" disabled selected>Select</option>
+                            <option value="1">Yes  (1)</option>
+                            <option value="0">No   (0)</option>
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label for="oldpeak">ST Depression (oldpeak) <span class="hint">(decimal)</span></label>
+                        <input
+                            type="number" id="oldpeak" name="oldpeak"
+                            placeholder="e.g. 1.5"
+                            min="0" max="10" step="0.1"
+                            required>
+                    </div>
+
+                    <div class="field">
+                        <label for="slope">ST Slope <span class="hint">(0–2)</span></label>
+                        <select id="slope" name="slope" required>
+                            <option value="" disabled selected>Select slope</option>
+                            <option value="0">0 – Upsloping</option>
+                            <option value="1">1 – Flat</option>
+                            <option value="2">2 – Downsloping</option>
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label for="ca">Major Vessels (Fluoroscopy) <span class="hint">(0–3)</span></label>
+                        <select id="ca" name="ca" required>
+                            <option value="" disabled selected>Select count</option>
+                            <option value="0">0</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label for="thal">Thalassemia <span class="hint">(0–2)</span></label>
+                        <select id="thal" name="thal" required>
+                            <option value="" disabled selected>Select type</option>
+                            <option value="0">0 – Normal</option>
+                            <option value="1">1 – Fixed Defect</option>
+                            <option value="2">2 – Reversible Defect</option>
+                        </select>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- ============================================
+                 SECTION 3 : Extra Vitals  (for BMI & HR)
+            ============================================ -->
+            <div class="section">
+                <div class="section-label">Extra Vitals</div>
+                <div class="grid-3">
+
+                    <div class="field">
+                        <label for="height">Height <span class="hint">(cm)</span></label>
+                        <input
+                            type="number" id="height" name="height"
+                            placeholder="e.g. 170"
+                            min="50" max="250"
+                            required>
+                    </div>
+
+                    <div class="field">
+                        <label for="weight">Weight <span class="hint">(kg)</span></label>
+                        <input
+                            type="number" id="weight" name="weight"
+                            placeholder="e.g. 72"
+                            min="10" max="300"
+                            required>
+                    </div>
+
+                    <div class="field">
+                        <label for="heart_rate">Resting Heart Rate <span class="hint">(bpm)</span></label>
+                        <input
+                            type="number" id="heart_rate" name="heart_rate"
+                            placeholder="e.g. 72"
+                            min="30" max="200"
+                            required>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- ============================================
+                 SUBMIT
+            ============================================ -->
+            <button type="submit" class="btn-submit" id="analyze-btn">
+                &#10084;&nbsp;&nbsp;Analyze Health
+            </button>
+
+        </form>
+
+        <p class="disclaimer">
+            This tool is for educational purposes only and does not constitute medical advice.<br>
+            Always consult a qualified healthcare professional for diagnosis and treatment.
+        </p>
+
+    </main>
+
+    <script>
+        // Simple client-side UX: show loading state while form submits
+        document.getElementById('health-form').addEventListener('submit', function () {
+            const btn = document.getElementById('analyze-btn');
+            btn.textContent = 'Analyzing...';
+            btn.style.opacity = '0.75';
+            btn.disabled = true;
+        });
+    </script>
+
+</body>
+</html>
