@@ -337,7 +337,7 @@ export default function InputView({ onSubmit, onViewDetail }) {
                   value={patientInfo.age}
                   onChange={handlePatientInfoChange}
                   required min="1" max="120"
-                  placeholder="e.g. 34"
+                  placeholder="e.g. 20"
                   style={{ padding:'12px 16px', borderRadius:'10px', fontSize:'0.93rem' }}
                 />
               </div>
