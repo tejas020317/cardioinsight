@@ -35,7 +35,8 @@ CORS(app)                            # Enable CORS for all routes
 # ============================================================
 
 try:
-    mongo_client = MongoClient("mongodb://localhost:27017/", serverSelectionTimeoutMS=2000)
+    mongo_uri = os.environ.get("MONGO_URI", "mongodb://localhost:27017/")
+    mongo_client = MongoClient(mongo_uri, serverSelectionTimeoutMS=2000)
     db = mongo_client["heart_app"]
     patients_collection = db["patients"]
     
