@@ -321,7 +321,7 @@ export default function InputView({ onSubmit, onViewDetail }) {
                 value={patientInfo.name}
                 onChange={handlePatientInfoChange}
                 required
-                placeholder="e.g. Advita Sonawane"
+                placeholder="e.g. Tejas Tambe"
                 style={{ padding:'12px 16px', borderRadius:'10px', fontSize:'0.93rem' }}
               />
             </div>
