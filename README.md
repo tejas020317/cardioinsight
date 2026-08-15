@@ -114,7 +114,7 @@ Accepts patient and clinical data, runs the ML model, computes health metrics (B
 **Sample Request:**
 ```json
 {
-  "name": "Advita Sonawane",
+  "name": "Tejas Tambe",
   "age": 34,
   "sex": 0,
   "cp": 2,
