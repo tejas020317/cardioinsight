@@ -1,6 +1,5 @@
-import React, { useRef, useEffect, useMemo, Suspense } from 'react';
+import React, { useRef, useMemo, Suspense } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { useGLTF } from '@react-three/drei';
 import * as THREE from 'three';
 
 function HeartModel({ color }) {

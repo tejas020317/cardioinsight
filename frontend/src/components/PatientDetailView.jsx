@@ -63,7 +63,7 @@ export default function PatientDetailView({ selectedPatientDetail, onBack }) {
             </h4>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', padding: '1rem 0' }}>
               <div><strong>Age:</strong> <span className="text-muted">{selectedPatientDetail.age || inputs.age || '--'} yrs</span></div>
-              <div><strong>Sex:</strong> <span className="text-muted">{selectedPatientDetail.gender !== undefined ? (selectedPatientDetail.gender == "1" ? "Male" : "Female") : mapSex(inputs.sex)}</span></div>
+              <div><strong>Sex:</strong> <span className="text-muted">{selectedPatientDetail.gender !== undefined ? (selectedPatientDetail.gender === "1" ? "Male" : "Female") : mapSex(inputs.sex)}</span></div>
             </div>
           </div>
 

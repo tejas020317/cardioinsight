@@ -221,17 +221,6 @@ export default function DashboardView({ currentPatient, onViewDetail }) {
     }
   };
 
-  const getRiskColor = (score) => {
-    if (score < 40) return 'color-safe';
-    if (score < 70) return 'color-warn';
-    return 'color-danger';
-  };
-
-  const getStatusColor = (status) => {
-    if (status === 'Normal') return 'status-safe';
-    if (status === 'Elevated' || status === 'Low' || status === 'Overweight') return 'status-warn';
-    return 'status-danger';
-  };
 
   const filteredHistory = cohortData.filter(p => {
     const q = searchQuery.toLowerCase();
@@ -310,7 +299,6 @@ export default function DashboardView({ currentPatient, onViewDetail }) {
             filteredHistory.map((record) => {
               // Extract logic
               const pName = record.name || `Patient #${String(record._id).substring(0, 4)}`;
-              const pAge = record.age || record.inputs?.age || record.medicalData?.age || '--';
               const pRisk = record.risk_score;
               const isActive = focusPatient && focusPatient._id === record._id;
               
