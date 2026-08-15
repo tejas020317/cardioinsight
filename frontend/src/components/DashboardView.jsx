@@ -175,7 +175,7 @@ export default function DashboardView({ currentPatient, onViewDetail }) {
   useEffect(() => {
     const fetchHistory = async () => {
       try {
-        const response = await fetch('http://127.0.0.1:5000/history');
+        const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://127.0.0.1:5000'}/history`);
         if (!response.ok) throw new Error('Failed to fetch historical cohort data');
         const data = await response.json();
         setCohortData(data);
@@ -206,7 +206,7 @@ export default function DashboardView({ currentPatient, onViewDetail }) {
   const handleConfirmDelete = async (e, id) => {
     e.stopPropagation();
     try {
-      const response = await fetch(`http://127.0.0.1:5000/patients/${id}`, { method: 'DELETE' });
+      const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://127.0.0.1:5000'}/patients/${id}`, { method: 'DELETE' });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "Failed to delete");
       
